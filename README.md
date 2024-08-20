@@ -20,9 +20,10 @@ sudo apt-get install ros-humble-ros-gz
 ```
 
 その他，必要なものをインストールします．
-ros control, python3, とか，要整理 
+ros control, python3, とか，要check
 ```bash
-TODO --- 
+sudo apt install ros-humble-ign-ros2-control
+sudo apt install python3
 ```
 
 ## プログラムコンパイル
@@ -55,12 +56,18 @@ rvizも立ち上がるようにしてますが，設定はちゃんとしてな�
 ```bash
 cd MoonSim
 source install/setup.bash
-ros2 run ??? ??? 
+ros2 run test_controller talker
 ```
-
 うまくいって入れば，４つの脚が同期して上下に動くと思います．
 
+gazebo の情報についても、新しいターミナルで以下のコマンドを打つことで、ROS と同じようにトピック情報を見ることができます。
+```bash
+ign topic -l
+ign topic -e -t /world/empty/clock
+```
+
 ## プログラムの説明
+TODO 
 
 
 
