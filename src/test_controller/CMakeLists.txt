@@ -22,6 +22,9 @@ find_package(rclcpp_action REQUIRED)
 add_executable(talker src/test_command_sender.cpp)
 ament_target_dependencies(talker rclcpp std_msgs trajectory_msgs)
 
+add_executable(talker_8leg src/test_command_sender_8leg.cpp)
+ament_target_dependencies(talker_8leg rclcpp std_msgs trajectory_msgs)
+
 add_executable(talker_once src/test_command_sender_once.cpp)
 ament_target_dependencies(talker_once rclcpp std_msgs trajectory_msgs)
 
@@ -32,6 +35,7 @@ ament_target_dependencies(action_once rclcpp rclcpp_action std_msgs trajectory_m
 install(TARGETS
   talker
   talker_once
+  talker_8leg  
   action_once
   DESTINATION lib/${PROJECT_NAME})
 
