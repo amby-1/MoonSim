@@ -108,7 +108,7 @@ ros2 run ms_gazebo_interfaces limb_cmd_node
 Gazeboに関係する部分では，Gazebo内に作られた8脚ロボット（src/robot_gazebo_ros2_controlで定義）の物理シミュレーションを行い，ROS2との連携機能を提供します．内部はよくわかりませんが，`/parameter_events`というトピックを通してROS２に機能を提供しているようです．
 ロボットの定義はURDFで行っており，パラメタ等を変えたい場合は `src/robot_gazebo_ros2_control/urdf/robot_8leg.urdf`をいじる必要があります．これはxacroから作られておりxacroファイルをいじったほうが良いが，ここら辺の説明はTODO．
 ロボットの座標系や物理パラメタは下記図を参考
-<img src="Figs/roboDefGazebo.png" width="400" alt="Nodes">
+<img src="Figs/roboDefGazebo.png" width="600" alt="Nodes">
 
 ### joint trajectory controller関係
 joint_trajectory_controller　に関係する部分では，８脚ロボットの各ジョイントを，`ros2 control` の `joint_trajectory_controller`の位置制御機能をつかって制御します．
@@ -120,7 +120,7 @@ joint_trajectory_controller　に関係する部分では，８脚ロボット�
 このノードは，moonshotで開発しているジョイント角指令トピック `/limb_n_1/joint/joint_cmd_list` を受け取り， `/joint_trajectory_controller/joint_trajectory`に変換して joint trajectory controllerへの指令を出します．
 moonshot型のメッセージは，`src/ms_module_msgs`内に定義してあり，このインターフェースでは， joint_cmd_list　のIDは下記図の通りと思って実装してあります．
 なお，このプログラムは制御周波数は 50Hz でデザインしています．
-<img src="Figs/roboDefMoon.png" width="400" alt="Nodes">
+<img src="Figs/roboDefMoon.png" width="1000" alt="Nodes">
 
 ### 関節角を指令するサンプルノード
 `limb_module_cmd_node`(`src/ms_gazebo_interfaces/src/limb_module_cmd_node.cpp`)では，関節角を指令するサンプルノードとなっている．
