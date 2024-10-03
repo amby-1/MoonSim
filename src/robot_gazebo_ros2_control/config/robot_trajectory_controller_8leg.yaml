@@ -35,6 +35,7 @@ joint_trajectory_controller:
       - ll3_tc
       - ll3_ct
       - ll3_ft
+      - torso
 
     gains:
       lr0_tc:
@@ -178,6 +179,12 @@ joint_trajectory_controller:
       ll3_ft:
         p: 50.0
         d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      torso:
+        p: 200.0
+        d: 10.0
         i: 0.0
         i_clamp: 1.0
         ff_velocity_scale: 0.0

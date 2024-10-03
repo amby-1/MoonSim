@@ -35,25 +35,47 @@
       </geometry>
     </collision>
   </link>
-  <link name="conct0">
+  <link name="conct0a">
     <inertial>
-      <origin rpy="0 -1.57075 0" xyz=" 0.04 0 0"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.00014333333333333334" ixy="0" ixz="0" iyy="0.00014333333333333334" iyz="0" izz="0.00017999999999999998"/>
+      <origin rpy="0 -1.57075 0" xyz=" 0.02 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="5.1666666666666664e-05" ixy="0" ixz="0" iyy="5.1666666666666664e-05" iyz="0" izz="8.999999999999999e-05"/>
     </inertial>
     <visual>
-      <origin rpy="0 -1.57075 0" xyz=" 0.04 0 0"/>
+      <origin rpy="0 -1.57075 0" xyz=" 0.02 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.06"/>
+        <cylinder length="0.04" radius="0.06"/>
       </geometry>
-      <material name="conct0_material">
+      <material name="conct0a_material">
         <color rgba="0 0.0 0.8 1.0"/>
       </material>
     </visual>
     <collision>
-      <origin rpy="0 -1.57075 0" xyz=" 0.04 0 0"/>
+      <origin rpy="0 -1.57075 0" xyz=" 0.02 0 0"/>
       <geometry>
-        <cylinder length="0.08" radius="0.06"/>
+        <cylinder length="0.04" radius="0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="conct0b">
+    <inertial>
+      <origin rpy="0 -1.57075 0" xyz=" 0.02 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="5.1666666666666664e-05" ixy="0" ixz="0" iyy="5.1666666666666664e-05" iyz="0" izz="8.999999999999999e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 -1.57075 0" xyz=" 0.02 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.06"/>
+      </geometry>
+      <material name="conct0b_material">
+        <color rgba="0 0.0 0.8 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 -1.57075 0" xyz=" 0.02 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.06"/>
       </geometry>
     </collision>
   </link>
@@ -81,13 +103,31 @@
   </link>
   <joint name="Torso01" type="fixed">
     <parent link="Body1"/>
-    <child link="conct0"/>
+    <child link="conct0b"/>
     <origin xyz="0.5 0 0"/>
   </joint>
+  <joint name="torso" type="continuous">
+    <parent link="conct0b"/>
+    <child link="conct0a"/>
+    <origin xyz="0.04 0 0"/>
+    <axis xyz="0 1 0"/>
+    <calibration rising="0.0"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+  <transmission name="tran_torso">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="torso">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_torso">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
   <joint name="Torso00" type="fixed">
-    <parent link="conct0"/>
+    <parent link="conct0a"/>
     <child link="Body0"/>
-    <origin xyz="0.08 0 0"/>
+    <origin xyz="0.04 0 0"/>
   </joint>
   <link name="lr0_coxa">
     <inertial>
@@ -1466,7 +1506,7 @@
         toeMass="${toe_m}" radius="${radius}" damping="0" friction="0" collision="LL4_tibia_fixed_joint_lump__LL4_toe_collision_collision_1"/>
     -->
  
- 
+
  
   <!-- ros_control plugin -->
    <!-- ros2_control plugin -->
@@ -1475,7 +1515,15 @@
     <hardware>
       <plugin>ign_ros2_control/IgnitionSystem</plugin>
     </hardware>
- 
+    <joint name="torso">
+      <command_interface name="effort">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
       <!-- Rev Link Right side -->
     <joint name="lr0_tc">
       <command_interface name="effort">

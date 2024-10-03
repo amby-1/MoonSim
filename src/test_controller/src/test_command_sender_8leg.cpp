@@ -51,6 +51,8 @@ public:
         message.joint_names.push_back("ll3_tc");
         message.joint_names.push_back("ll3_ct");
         message.joint_names.push_back("ll3_ft");
+
+        message.joint_names.push_back("torso");
         
         count_++;
         double omega = 0.05;
@@ -62,7 +64,7 @@ public:
         
         
         auto point = trajectory_msgs::msg::JointTrajectoryPoint();
-        point.positions.resize(24);
+        point.positions.resize(25);
 
         // LR0 
         point.positions.at(0) = 0.;//angle;
@@ -97,6 +99,8 @@ public:
         point.positions.at(21) = 0.; //angle;
         point.positions.at(22) = -angle4;
         point.positions.at(23) = -angle4;
+        // torso 
+        point.positions.at(24) = angle * 0.3;
 
 
         point.time_from_start = rclcpp::Duration::from_seconds(0.01);
