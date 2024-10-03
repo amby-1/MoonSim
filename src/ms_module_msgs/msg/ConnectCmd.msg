@@ -1,0 +1,4 @@
+std_msgs/Header header
+ms_module_msgs/ModuleID publisher_id
+ms_module_msgs/ConnectorID connector_id
+bool lock_or_unlock

@@ -1,0 +1,4 @@
+std_msgs/Header header
+ms_module_msgs/ConnectorID self_id
+ms_module_msgs/ConnectorID opposide_id
+float64 connection_posture

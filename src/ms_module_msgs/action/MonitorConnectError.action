@@ -1,0 +1,7 @@
+ms_module_msgs/ConnectCmd connect_cmd
+float64 timeout
+---
+bool is_error_detected
+---
+bool success
+ms_module_msgs/ConnectorErrorState connectors_error_state
