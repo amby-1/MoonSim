@@ -66,8 +66,9 @@ gazebo の情報についても、新しいターミナルで以下のコマン�
 ign topic -l
 ign topic -e -t /world/empty/clock
 ```
+
 ### 8Leg robot 
-２つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
+３つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
 ```bash
 cd MoonSim
 source install/setup.bash
@@ -77,20 +78,24 @@ ros2 launch robot_gazebo_ros2_control trajectory_controller_8leg.launch
 エラーが出なければ正常です．ワーニングは出ます．
 rvizも立ち上がるようにしてますが，設定はちゃんとしてないので，矢印だけ出てきます．
 
-２つ目のターミナルで，ジョイントに位置指令を送り続けるノードを立ち上げます．
+２つ目のターミナルで，moonshot用のメッセージをガゼボ用メッセージに変換してくれるインターフェースノードを立ち上げます．
 ```bash
 cd MoonSim
 source install/setup.bash
-ros2 run test_controller talker_8leg
+ros2 run ms_gazebo_interfaces interface_8leg_node
 ```
-うまくいって入れば，8つの脚が少し位相遅れしながら上下に動くと思います．
 
+３つ目のターミナルで、サンプルのmoonshot用のコマンド司令ノードを立ち上げます。
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces limb_cmd_node
+```
+
+うまくいって入れば，前２つの脚が動くと思います．
 
 
 ## プログラムの説明
-TODO 
-
-
 
 
 
