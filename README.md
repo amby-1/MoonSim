@@ -108,6 +108,7 @@ ros2 run ms_gazebo_interfaces limb_cmd_node
 Gazeboに関係する部分では，Gazebo内に作られた8脚ロボット（src/robot_gazebo_ros2_controlで定義）の物理シミュレーションを行い，ROS2との連携機能を提供します．内部はよくわかりませんが，`/parameter_events`というトピックを通してROS２に機能を提供しているようです．
 ロボットの定義はURDFで行っており，パラメタ等を変えたい場合は `src/robot_gazebo_ros2_control/urdf/robot_8leg.urdf`をいじる必要があります．これはxacroから作られておりxacroファイルをいじったほうが良いが，ここら辺の説明はTODO．
 ロボットの座標系や物理パラメタは下記図を参考
+
 <img src="Figs/roboDefGazebo.png" width="600" alt="Nodes">
 
 ### joint trajectory controller関係
@@ -120,6 +121,7 @@ joint_trajectory_controller　に関係する部分では，８脚ロボット�
 このノードは，moonshotで開発しているジョイント角指令トピック `/limb_n_1/joint/joint_cmd_list` を受け取り， `/joint_trajectory_controller/joint_trajectory`に変換して joint trajectory controllerへの指令を出します．
 moonshot型のメッセージは，`src/ms_module_msgs`内に定義してあり，このインターフェースでは， joint_cmd_list　のIDは下記図の通りと思って実装してあります．
 なお，このプログラムは制御周波数は 50Hz でデザインしています．
+
 <img src="Figs/roboDefMoon.png" width="1000" alt="Nodes">
 
 ### 関節角を指令するサンプルノード
@@ -129,9 +131,9 @@ moonshot型のメッセージは，`src/ms_module_msgs`内に定義してあり�
 サンプルプログラムを見て頂けばわかるが，以下のように，まず，CModule_Joint_CMDクラスを，limb番号（例では1）とjoint番号(例では3)とともに作成する．
 ```c++
 auto limb_1_joint_3_cmd_ = CModule_Joint_CMD(publisher_id_, "limb", "n", 1, "", "", 3);
-'''
+```
 次に，このクラスのcreate関数をつかって，目標関節角(limb_1_joint_3_target_angle) [deg] を入れてメッセージを作成，JoinCmdListにpush_backする
-...
+```c++
 auto limb_1_joint_3_cmd_msg = limb_1_joint_3_cmd_.create_position_cmd_msg(node_, limb_1_joint_3_target_angle);
 ...
 ms_module_msgs::msg::JointCmdList cmd;
