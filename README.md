@@ -93,12 +93,14 @@ ros2 run ms_gazebo_interfaces limb_cmd_node
 ```
 
 うまくいって入れば，前２つの脚が動くと思います．
-<img src="Figs/8leg_robot.png" width="400" alt="8Leg モデル">
+
+<img src="Figs/8leg_robot.png" width="500" alt="8Leg モデル">
 
 ## プログラムの説明　（8Leg）
 ### ノード接続図
 ノードの接続図を示します．
-<img src="Figs/node_connection.png" width="400" alt="Nodes">
+
+<img src="Figs/node_connection.png" width="1000" alt="Nodes">
 
 このノード群は，大きくは A: Gazebo に関わる部分，B: joint_trajectory_controller に関わる部分，C: moonshot型に変更するインターフェース部分に大別されます．
 
