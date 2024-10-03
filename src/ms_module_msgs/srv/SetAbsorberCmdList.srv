@@ -1,0 +1,5 @@
+ms_module_msgs/AbsorberCmd[] absorber_cmd_list
+float64 timeout
+---
+bool success
+ms_module_msgs/AbsorberState[] absorber_state_list

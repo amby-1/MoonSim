@@ -1,0 +1,4 @@
+float64 timeout
+---
+bool success
+bool activating_or_sleeping

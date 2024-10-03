@@ -1,0 +1,5 @@
+ms_module_msgs/JointCmd[] joint_cmd_list
+float64 timeout
+---
+bool success
+ms_module_msgs/JointState[] joint_state_list

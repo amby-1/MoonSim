@@ -1,0 +1,5 @@
+ms_module_msgs/ConnectionCmd connection_cmd
+float64 timeout
+---
+bool success
+ms_module_msgs/ConnectionState connection_state

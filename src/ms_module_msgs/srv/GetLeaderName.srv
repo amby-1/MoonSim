@@ -1,0 +1,7 @@
+std_msgs/Header header
+ms_module_msgs/ModuleID publisher_id
+---
+bool success
+std_msgs/Header header
+ms_module_msgs/ModuleID responsor_id
+ms_module_msgs/ModuleID leader_id

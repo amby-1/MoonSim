@@ -1,0 +1,5 @@
+std_msgs/Header header
+ms_module_msgs/ModuleID publisher_id
+bool light_up
+---
+bool success
