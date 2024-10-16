@@ -24,6 +24,8 @@ ros control, python3, とか，要check
 ```bash
 sudo apt install ros-humble-ign-ros2-control
 sudo apt install python3
+sudo apt install ros-humble-ros2-control
+sudo apt install ros-humble-ros2-controllers
 ```
 
 ## プログラムコンパイル
@@ -47,7 +49,7 @@ source install/setup.bash
 ```bash
 cd MoonSim
 source install/setup.bash
-ros2 launch robot_gazebo_ros2_control trajectory_controller_2.launch
+ros2 launch robot_gazebo_ros2_control trajectory_controller_2.launch.py
 ```
 これで，Gazeboが立ち上がり，４脚ロボットが出てきます．
 エラーが出なければ正常です．ワーニングは出ます．
@@ -72,7 +74,7 @@ ign topic -e -t /world/empty/clock
 ```bash
 cd MoonSim
 source install/setup.bash
-ros2 launch robot_gazebo_ros2_control trajectory_controller_8leg.launch
+ros2 launch robot_gazebo_ros2_control trajectory_controller_8leg.launch.py
 ```
 これで，Gazeboが立ち上がり，8脚ロボットが出てきます．
 エラーが出なければ正常です．ワーニングは出ます．
@@ -95,6 +97,34 @@ ros2 run ms_gazebo_interfaces limb_cmd_node
 うまくいって入れば，前２つの脚が動くと思います．
 
 <img src="Figs/8leg_robot.png" width="500" alt="8Leg モデル">
+
+### 6 Limb wheels robot
+
+３つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 launch robot_gazebo_ros2_control trajectory_controller_6wheel.launch.py
+```
+これで，Gazeboが立ち上がり，6Limb wheel ロボットが出てきます．
+エラーが出なければ正常です．ワーニングは出ます．
+rvizも立ち上がるようにしてますが，設定はちゃんとしてないので，矢印だけ出てきます．
+
+２つ目のターミナルで，moonshot用のメッセージをガゼボ用メッセージに変換してくれるインターフェースノードを立ち上げます．
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces interface_6wheels_node
+```
+
+３つ目のターミナルで、サンプルのmoonshot用のコマンド司令ノードを立ち上げます。
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces limb_cmd_6wheels 
+```
+
+
 
 ## プログラムの説明　（8Leg）
 ### ノード接続図
