@@ -124,6 +124,7 @@ source install/setup.bash
 ros2 run ms_gazebo_interfaces limb_cmd_6wheels 
 ```
 
+ロボットがゆっくり立ち上がって，進む様子が出てくると思います．
 
 
 ## プログラムの説明　（8Leg）
@@ -170,6 +171,14 @@ ms_module_msgs::msg::JointCmdList cmd;
 cmd.joint_cmd_list.push_back(limb_1_joint_3_cmd_msg);
 ```
 あとは，これをpublishすれば指令が送られます．
+
+## プログラムの説明　（6Limb wheels）
+基本的には8脚と同じなので，ここではロボットのパラメタと，座標系の定義だけを共有します．
+<img src="Figs/roboDef6wheels.png" width="600" alt="Nodes">
+
+moonショット型のジョイント角の定義は以下です．
+<img src="Figs/roboDefMoon6wheels.png" width="600" alt="Nodes">
+
 
 ## TODO
 センシング関係のトピックがまだない
