@@ -22,14 +22,20 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME})
 # Add the executable
 add_executable(limb_cmd_node src/limb_module_cmd_node.cpp)
 add_executable(interface_8leg_node src/interface_8leg.cpp)
+add_executable(interface_6wheels_node src/interface_6wheels.cpp)
+add_executable(limb_cmd_6wheels src/limb_module_cmd_node_6wheels.cpp)
 
 # Link against dependencies
 ament_target_dependencies(limb_cmd_node rclcpp std_msgs ms_module_msgs)
+ament_target_dependencies(limb_cmd_6wheels rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(interface_8leg_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
+ament_target_dependencies(interface_6wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 
 install(TARGETS
   limb_cmd_node
   interface_8leg_node
+  interface_6wheels_node
+  limb_cmd_6wheels
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

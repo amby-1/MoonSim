@@ -25,6 +25,12 @@ ament_target_dependencies(talker rclcpp std_msgs trajectory_msgs)
 add_executable(talker_8leg src/test_command_sender_8leg.cpp)
 ament_target_dependencies(talker_8leg rclcpp std_msgs trajectory_msgs)
 
+add_executable(talker_4wheel src/test_command_sender_4wheel.cpp)
+ament_target_dependencies(talker_4wheel rclcpp std_msgs trajectory_msgs)
+
+add_executable(talker_6wheel src/test_command_sender_6wheel.cpp)
+ament_target_dependencies(talker_6wheel rclcpp std_msgs trajectory_msgs)
+
 add_executable(talker_once src/test_command_sender_once.cpp)
 ament_target_dependencies(talker_once rclcpp std_msgs trajectory_msgs)
 
@@ -35,7 +41,9 @@ ament_target_dependencies(action_once rclcpp rclcpp_action std_msgs trajectory_m
 install(TARGETS
   talker
   talker_once
-  talker_8leg  
+  talker_8leg
+  talker_4wheel
+  talker_6wheel
   action_once
   DESTINATION lib/${PROJECT_NAME})
 

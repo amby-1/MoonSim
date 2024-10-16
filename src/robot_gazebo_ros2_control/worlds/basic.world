@@ -1,11 +1,21 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <world name="default">
-    <include>
-      <uri>model://ground_plane</uri>
-    </include>
+    <physics name="default_physics" type="ode">
+      <max_step_size>0.0005</max_step_size> <!-- Set the simulation step size here -->
+      <real_time_update_rate>2000</real_time_update_rate> <!-- Set the real-time update rate -->
+    </physics>
+        <!-- A global light source -->
+
+    <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
+
+    <!-- Ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
   </world>
 </sdf>
