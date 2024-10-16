@@ -174,11 +174,11 @@ cmd.joint_cmd_list.push_back(limb_1_joint_3_cmd_msg);
 
 ## プログラムの説明　（6Limb wheels）
 基本的には8脚と同じなので，ここではロボットのパラメタと，座標系の定義だけを共有します．
-<img src="Figs/roboDef6wheels.png" width="600" alt="Nodes">
+<img src="Figs/roboDef6wheels.png" width="500" alt="Nodes">
 
 moonショット型のジョイント角の定義は以下です．
 
-<img src="Figs/roboDefMoon6wheels.png" width="600" alt="Nodes">
+<img src="Figs/roboDefMoon6wheels.png" width="1000" alt="Nodes">
 
 
 ## TODO
