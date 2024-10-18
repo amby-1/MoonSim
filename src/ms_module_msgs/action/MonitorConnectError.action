@@ -1,4 +1,4 @@
-ms_module_msgs/ConnectCmd connect_cmd
+ms_module_msgs/ConnectorCmd connector_cmd
 float64 timeout
 ---
 bool is_error_detected

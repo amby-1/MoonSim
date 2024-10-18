@@ -20,7 +20,7 @@
 #       please give the empty value if it is not needed.
 
 # - type: the type of mudular: body, leg, endeffector, sensor, ... please name a good name
-# - name: the subtype of mudular: body_version1, body_version2, ... please name a good name
+# - subtype: the subtype of mudular: body_version1, body_version2, ... please name a good name
 # - num:   the serial number of mudular.
 
 ms_module_msgs/ModuleID module_id

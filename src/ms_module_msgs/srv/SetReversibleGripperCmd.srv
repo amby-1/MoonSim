@@ -1,0 +1,5 @@
+ms_module_msgs/ReversibleGripperCmd rev_gripper_cmd
+float64 timeout
+---
+bool success
+ms_module_msgs/ReversibleGripperState rev_gripper_state

@@ -1,0 +1,4 @@
+float64 timeout
+---
+bool success
+ms_module_msgs/LinkingConnectorsState[] linking_connectors_state_list

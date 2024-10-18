@@ -1,0 +1,4 @@
+float64 timeout
+---
+bool success
+ms_module_msgs/MultiFuncEndEffectorState[] multi_func_ee_state_list
