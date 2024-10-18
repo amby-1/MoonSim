@@ -95,7 +95,7 @@ int main(int argc, char * argv[])
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start Checking motions 0 => 30");
     double standup_time = 9; // s
     double targ_CT_angle = 0.0; //deg
-    double targ_FT_angle = 30.0; //deg
+    double targ_FT_angle = 90.0; //deg
     double targ_TC_angle = 0.0; //deg
     double targ_WH_angle = 0.0; //deg
     double targ_WH_vel = 10.0; //deg    

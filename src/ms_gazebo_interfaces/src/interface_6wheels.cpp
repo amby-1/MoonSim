@@ -8,6 +8,7 @@
 #include "std_msgs/msg/string.hpp"
 #include "trajectory_msgs/msg/joint_trajectory.hpp"
 #include "ms_module_msgs/msg/joint_cmd_list.hpp"
+#include "sensor_msgs/msg/joint_state.hpp"
 
 using namespace std::chrono_literals;
 #define PI 3.14159265358979323846
@@ -139,6 +140,12 @@ public:
     // define publisher joint trajectroy message
     //publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
     publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("/joint_trajectory_controller/joint_trajectory", 10);
+    publisher_joint_states.at(0) = this->create_publisher<sensor_msgs::msg::JointState>("/limb_n_1/joint/out/joint_state", 10);
+    publisher_joint_states.at(1) = this->create_publisher<sensor_msgs::msg::JointState>("/limb_n_2/joint/out/joint_state", 10);
+    publisher_joint_states.at(2) = this->create_publisher<sensor_msgs::msg::JointState>("/limb_n_3/joint/out/joint_state", 10);
+    publisher_joint_states.at(3) = this->create_publisher<sensor_msgs::msg::JointState>("/limb_n_4/joint/out/joint_state", 10);
+    publisher_joint_states.at(4) = this->create_publisher<sensor_msgs::msg::JointState>("/limb_n_5/joint/out/joint_state", 10);    
+    publisher_joint_states.at(5) = this->create_publisher<sensor_msgs::msg::JointState>("/limb_n_6/joint/out/joint_state", 10);    
     
     subscription_1 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_1/joint/in/joint_cmd_list", 10,
@@ -159,6 +166,9 @@ public:
             "/limb_n_6/joint/in/joint_cmd_list", 10,
             std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
 
+    subscription_joint_state = this->create_subscription<sensor_msgs::msg::JointState>(
+            "/joint_states", 10,
+            std::bind(&ms_gz_interface_6wheels::topic_callback_joint_state, this, std::placeholders::_1));
 
     auto timer_callback =
       [this]() -> void {
@@ -212,7 +222,7 @@ public:
         point.positions.at(4) = angle2;
         point.positions.at(5) = angle2;
         // LR2
-        point.positions.at(6) = 0.;//angle;
+        point.positions.at(6) = 0.;//angle;f
         point.positions.at(7) = angle3;
         point.positions.at(8) = angle3;
         // LR3 
@@ -246,7 +256,27 @@ public:
         //RCLCPP_INFO(this->get_logger(), "Publishing lr0-tc: '%f' rad", jPoints.positions.at(1));
         this->publisher_->publish(message);
       };
+
+    auto timer_callback_joint_state =
+      [this]() -> void {
+        //Publish joint state message
+        for (int i=0; i<6; i++){
+            auto message = sensor_msgs::msg::JointState();
+            message.header.stamp = this->now();
+            for (int j=0; j<4; j++){
+              auto name = "limb_n_" + std::to_string(i+1) + "_J_" + std::to_string(j+1);// limb_n_2_J_4 
+              // Joint 1 TC
+              message.name.push_back(name);
+              message.position.push_back(sns_positions.at(map_gzJoint_ID[ map_msJoint_gzJoint[name] ]));
+              message.velocity.push_back(sns_velocities.at(map_gzJoint_ID[ map_msJoint_gzJoint[name] ]));
+              message.effort.push_back(sns_efforts.at(map_gzJoint_ID[ map_msJoint_gzJoint[name] ]));
+            }
+            this->publisher_joint_states.at(i)->publish(message);
+        }
+      };
+
     timer_ = this->create_wall_timer(CONTROL_ms, timer_callback);
+    timer2_ = this->create_wall_timer(20ms, timer_callback_joint_state);
     RCLCPP_INFO(this->get_logger(), "Interface node to bridge GZ and Moon. CMD is sent to GZ every %d ms ", CONTROL_ms);
     RCLCPP_INFO(this->get_logger(), "This interface only provides bridge between joint_angle_commands. Sensing information has not YET been bridged <TODO>");
   }
@@ -268,18 +298,50 @@ private:
             auto joint_id = map_gzJoint_ID[joint_name_gz];
             double joint_position = 0.0;
             if (joint_name_gz.find("WH") != std::string::npos) {
-                joints_WH_positions[joint_id - 18] += joint_cmd.velocity * PI / 180. * 1./CONTROL_freq;
-                joint_position = joints_WH_positions[joint_id - 18];
-                jPoints.velocities.at(joint_id) = joint_cmd.velocity * PI / 180.;
+                if( joint_cmd.control_type == 1){
+                  // velocity control
+                  joints_WH_positions[joint_id - 18] += joint_cmd.velocity * PI / 180. * 1./CONTROL_freq;
+                  joint_position = joints_WH_positions[joint_id - 18];
+                  jPoints.velocities.at(joint_id) = joint_cmd.velocity * PI / 180.;
+                }else{
+                  // position control
+                  joint_position = joint_cmd.position * PI / 180.;
+                  joints_WH_positions[joint_id - 18] = joint_position;
+                }
             }else{
                 joint_position = joint_cmd.position * PI / 180.;
             }
             jPoints.positions.at(joint_id) = joint_position * map_gzJoint_msJoint_direction[joint_name_gz];
         }
     }
+   
+  // joint state callback
+  void topic_callback_joint_state(const sensor_msgs::msg::JointState::SharedPtr msg)
+    {
+        // Extract the data from the message and put it into a position commands
+        for(std::vector<std::string>::size_type i=0; i< msg->name.size(); i++){
+            auto joint_name = msg->name[i];
+            auto it = map_gzJoint_msJoint.find(joint_name);
+            if (it == map_gzJoint_msJoint.end()) {
+                RCLCPP_WARN(this->get_logger(), "WARNING :: GZ Joint name not found in the map::  %s", joint_name.c_str());
+                continue;
+            }
+            //auto joint_name_ms = map_gzJoint_msJoint[joint_name];
+            auto joint_id = map_gzJoint_ID[joint_name];
+            sns_positions.at(joint_id) = msg->position[i] * 180./PI;
+            sns_velocities.at(joint_id) = msg->velocity[i] * 180./PI;
+            sns_efforts.at(joint_id) = msg->effort[i];
+        }
+    }
 
   rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr timer2_;
+  
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr publisher_;
+  rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr subscription_joint_state;
+
+  std::array<rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr, 6> publisher_joint_states;
+ 
   rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_1;
   rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_2;
   rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_3;
@@ -293,6 +355,10 @@ private:
   std::unordered_map<std::string, std::string> map_msJoint_gzJoint;
   std::map<std::string, int> map_gzJoint_ID;
   trajectory_msgs::msg::JointTrajectoryPoint jPoints;
+  std::array<double, 24> sns_positions;
+  std::array<double, 24> sns_velocities;
+  std::array<double, 24> sns_efforts;
+
   double joints_WH_positions[6];
 
 };
