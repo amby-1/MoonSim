@@ -140,9 +140,25 @@ public:
     //publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
     publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("/joint_trajectory_controller/joint_trajectory", 10);
     
-    subscription_ = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
+    subscription_1 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_1/joint/in/joint_cmd_list", 10,
             std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
+    subscription_2 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
+            "/limb_n_2/joint/in/joint_cmd_list", 10,
+            std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
+    subscription_3 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
+            "/limb_n_3/joint/in/joint_cmd_list", 10,
+            std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
+    subscription_4 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
+            "/limb_n_4/joint/in/joint_cmd_list", 10,
+            std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
+    subscription_5 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
+            "/limb_n_5/joint/in/joint_cmd_list", 10,
+            std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
+    subscription_6 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
+            "/limb_n_6/joint/in/joint_cmd_list", 10,
+            std::bind(&ms_gz_interface_6wheels::topic_callback, this, std::placeholders::_1));
+
 
     auto timer_callback =
       [this]() -> void {
@@ -232,7 +248,7 @@ public:
       };
     timer_ = this->create_wall_timer(CONTROL_ms, timer_callback);
     RCLCPP_INFO(this->get_logger(), "Interface node to bridge GZ and Moon. CMD is sent to GZ every %d ms ", CONTROL_ms);
-    RCLCPP_INFO(this->get_logger(), "This interface only provides bridge between joint_angle_commands. Sensing information has not YET been bridged <TODO>", CONTROL_ms);
+    RCLCPP_INFO(this->get_logger(), "This interface only provides bridge between joint_angle_commands. Sensing information has not YET been bridged <TODO>");
   }
 
 private:
@@ -264,7 +280,13 @@ private:
 
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr publisher_;
-  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_;
+  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_1;
+  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_2;
+  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_3;
+  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_4;
+  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_5;
+  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_6;
+  
   int count_;
   std::unordered_map<std::string, std::string> map_gzJoint_msJoint;
   std::unordered_map<std::string, int> map_gzJoint_msJoint_direction; // If gzJoit's direction is equal to that of msJoint, set 1. otherwise, set  -1     
