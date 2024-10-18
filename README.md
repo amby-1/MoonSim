@@ -126,12 +126,12 @@ ros2 run ms_gazebo_interfaces limb_cmd_6wheels
 
 ロボットがゆっくり立ち上がって，進む様子が出てくると思います．
 
-
-tuiki 
-
+＊追記
+車輪も位置制御で行う　＋　ジョイント角を手に入れる　を更新したノードを立ち上げるにはこちらを実行してください
 ```bash
 ros2 run ms_gazebo_interfaces limb_cmd_6wheels_posver
 ```
+説明は後ろに書きます．
 
 
 ## プログラムの説明　（8Leg）
@@ -188,10 +188,10 @@ moonショット型のジョイント角の定義は以下です．
 <img src="Figs/roboDefMoon6wheels.png" width="1000" alt="Nodes">
 
 
-sample is 
+位置制御とセンシングを行うノードのプログラムはこちらです．
+基本的には，このインターフェースで実機と通信できるので（モジュールIDなどは調整必要），これに合わせてノードを作れば大丈夫と思います．
 '''limb_module_cmd_node_6wheels_posver.cpp'''
-
-
+指令もセンシングも単位は　度　です．
 
 ## TODO
 センシング関係のトピックがまだない
