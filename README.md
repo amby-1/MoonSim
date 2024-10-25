@@ -133,6 +133,34 @@ ros2 run ms_gazebo_interfaces limb_cmd_6wheels_posver
 ```
 説明は後ろに書きます．
 
+### 5 Limb wheels robot
+
+３つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 launch robot_gazebo_ros2_control trajectory_controller_5wheel.launch.py
+```
+これで，Gazeboが立ち上がり，6Limb wheel ロボットが出てきます．
+エラーが出なければ正常です．ワーニングは出ます．
+rvizも立ち上がるようにしてますが，設定はちゃんとしてないので，矢印だけ出てきます．
+
+２つ目のターミナルで，moonshot用のメッセージをガゼボ用メッセージに変換してくれるインターフェースノードを立ち上げます．
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces interface_5wheels_node
+```
+
+３つ目のターミナルで、サンプルのmoonshot用のコマンド司令ノードを立ち上げます。
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces limb_cmd_5wheels 
+```
+
+ロボットがゆっくり立ち上がって，進む様子が出てくると思います．
+
 
 ## プログラムの説明　（8Leg）
 ### ノード接続図
@@ -193,6 +221,9 @@ moonショット型のジョイント角の定義は以下です．
 '''limb_module_cmd_node_6wheels_posver.cpp'''
 指令もセンシングも単位は　度　です．
 
+## プログラムの説明　（5Limb wheels）
+Basically, this program eliminate LH limb from 6Limb simulation. I am sorry that I would like to skip the explanation at this moment. Please refer the explanation of 6 wheeled Llimb
+
+
 ## TODO
-センシング関係のトピックがまだない
 
