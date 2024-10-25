@@ -23,7 +23,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME})
 add_executable(limb_cmd_node src/limb_module_cmd_node.cpp)
 add_executable(interface_8leg_node src/interface_8leg.cpp)
 add_executable(interface_6wheels_node src/interface_6wheels.cpp)
+add_executable(interface_5wheels_node src/interface_5wheels.cpp)
 add_executable(limb_cmd_6wheels src/limb_module_cmd_node_6wheels.cpp)
+add_executable(limb_cmd_5wheels src/limb_module_cmd_node_5wheels.cpp)
 add_executable(limb_cmd_test src/limb_module_cmd_node_1limb_for_test.cpp)
 add_executable(limb_cmd_6wheels_posver src/limb_module_cmd_node_6wheels_posver.cpp)
 
@@ -31,8 +33,10 @@ add_executable(limb_cmd_6wheels_posver src/limb_module_cmd_node_6wheels_posver.c
 # Link against dependencies
 ament_target_dependencies(limb_cmd_node rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(limb_cmd_6wheels rclcpp std_msgs ms_module_msgs)
+ament_target_dependencies(limb_cmd_5wheels rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(interface_8leg_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 ament_target_dependencies(interface_6wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
+ament_target_dependencies(interface_5wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 ament_target_dependencies(limb_cmd_test rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(limb_cmd_6wheels_posver rclcpp std_msgs ms_module_msgs)
 
@@ -40,7 +44,9 @@ install(TARGETS
   limb_cmd_node
   interface_8leg_node
   interface_6wheels_node
+  interface_5wheels_node
   limb_cmd_6wheels
+  limb_cmd_5wheels
   limb_cmd_test
   limb_cmd_6wheels_posver
   DESTINATION lib/${PROJECT_NAME})
