@@ -1,0 +1,73 @@
+<sdf version='1.5'>
+    <!-- Draw Circle -->
+    <model name='ros_symbol'>
+      <static>1</static>
+      <link name='symbol'>
+        <collision name='step_collision'>
+            <pose>3 0 0.05 0 0 0</pose>
+            <geometry>
+                <box>
+                    <size>2 2 0.1</size>
+                </box>
+            </geometry>
+            <max_contacts>10</max_contacts>
+            <surface>
+                <bounce/>
+                <friction>
+                    <ode/>
+                </friction>
+                <contact>
+                    <ode/>
+                </contact>
+            </surface>    
+        </collision>
+        
+        <visual name='step_visual'>
+            <pose>3 0 0.05 0 0 0</pose>
+            <geometry>
+            <box>
+                <size>2 2 0.1</size>
+            </box>
+            </geometry>
+            <material>
+                <ambient>0.5 1 0.5 1</ambient>
+                <diffuse>0.5 1 0.5 1</diffuse>
+                <specular>1 1 1 1</specular>
+            </material>
+         </visual>
+
+        <collision name='step2_collision'>
+            <pose>5 0 0.1 0 0 0</pose>
+            <geometry>
+                <box>
+                    <size>2 2 0.2</size>
+                </box>
+            </geometry>
+            <max_contacts>10</max_contacts>
+            <surface>
+                <bounce/>
+                <friction>
+                    <ode/>
+                </friction>
+                <contact>
+                    <ode/>
+                </contact>
+            </surface>    
+        </collision>
+        
+        <visual name='step2_visual'>
+            <pose>5 0 0.1 0 0 0</pose>
+            <geometry>
+            <box>
+                <size>2 2 0.2</size>
+            </box>
+            </geometry>
+            <material>
+                <ambient>0.5 1 0.5 1</ambient>
+                <diffuse>0.5 1 0.5 1</diffuse>
+                <specular>1 1 1 1</specular>
+            </material>
+         </visual>
+    </link>
+  </model>
+</sdf>
