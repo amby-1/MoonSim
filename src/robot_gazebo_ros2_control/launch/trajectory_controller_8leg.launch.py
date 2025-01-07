@@ -8,7 +8,7 @@ from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchD
 from launch.actions import RegisterEventHandler
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -80,6 +80,21 @@ def generate_launch_description():
                 ],
     )
 
+    gz_spawn_field = Node(
+        package='ros_gz_sim',
+        executable='create',
+        output='screen',
+            #フィールドのsdfファイルを指定
+        arguments=['-file', PathJoinSubstitution([
+                        gazebo_pkg_share, 
+                        "field", "step.sdf"]),
+                   '-allow_renaming', 'false'
+                '-x', '0.',
+                '-y', '0.',
+                '-z', '0.',
+                ],
+    )
+
     load_joint_state_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'joint_state_broadcaster'],
@@ -113,6 +128,8 @@ def generate_launch_description():
             '/world/empty/model/robot/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model',
             '/wrench@geometry_msgs/msg/Wrench[gz.msgs.Wrench',
             '/contacts@ros_gz_interfaces/msg/Contact[gz.msgs.Contact',
+            # odometry (ROS2 -> IGN)
+            '/odom@nav_msgs/msg/Odometry[ignition.msgs.Odometry',
         ],
         remappings=[
             ('/world/empty/model/robot/joint_state', 'gz_joint_states'),
@@ -144,6 +161,7 @@ def generate_launch_description():
         gazebo,
         node_robot_state_publisher,
         gz_spawn_entity,
+        gz_spawn_field,
         bridge,
         #velocity_converter,
         rviz,

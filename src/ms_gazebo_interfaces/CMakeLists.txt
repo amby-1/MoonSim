@@ -28,7 +28,7 @@ add_executable(limb_cmd_6wheels src/limb_module_cmd_node_6wheels.cpp)
 add_executable(limb_cmd_5wheels src/limb_module_cmd_node_5wheels.cpp)
 add_executable(limb_cmd_test src/limb_module_cmd_node_1limb_for_test.cpp)
 add_executable(limb_cmd_6wheels_posver src/limb_module_cmd_node_6wheels_posver.cpp)
-
+add_executable(limb_cmd_8leg src/limb_module_cmd_node_8leg.cpp)
 
 # Link against dependencies
 ament_target_dependencies(limb_cmd_node rclcpp std_msgs ms_module_msgs)
@@ -39,6 +39,7 @@ ament_target_dependencies(interface_6wheels_node rclcpp std_msgs ms_module_msgs 
 ament_target_dependencies(interface_5wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 ament_target_dependencies(limb_cmd_test rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(limb_cmd_6wheels_posver rclcpp std_msgs ms_module_msgs)
+ament_target_dependencies(limb_cmd_8leg rclcpp std_msgs ms_module_msgs)
 
 install(TARGETS
   limb_cmd_node
@@ -49,6 +50,7 @@ install(TARGETS
   limb_cmd_5wheels
   limb_cmd_test
   limb_cmd_6wheels_posver
+  limb_cmd_8leg
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

@@ -37,6 +37,8 @@ git clone https://github.com/amby-1/MoonSim.git
 フォルダ内部で，コンパイルして下さい
 ```bash
 cd MoonSim
+colcon build --packages-select ms_module_msgs
+source install/setup.bash
 colcon build
 source install/setup.bash
 ```
@@ -45,7 +47,7 @@ source install/setup.bash
 
 ## プログラム実行
 ### 4Leg robot 
-２つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
+２つターミナルを立ち上げてください．１つ目でgazeboをたちあげ通ってますか？　ます
 ```bash
 cd MoonSim
 source install/setup.bash
@@ -77,6 +79,7 @@ source install/setup.bash
 ros2 launch robot_gazebo_ros2_control trajectory_controller_8leg.launch.py
 ```
 これで，Gazeboが立ち上がり，8脚ロボットが出てきます．
+更に、ステップ上の環境も出てくると思います。
 エラーが出なければ正常です．ワーニングは出ます．
 rvizも立ち上がるようにしてますが，設定はちゃんとしてないので，矢印だけ出てきます．
 
@@ -97,6 +100,17 @@ ros2 run ms_gazebo_interfaces limb_cmd_node
 うまくいって入れば，前２つの脚が動くと思います．
 
 <img src="Figs/8leg_robot.png" width="500" alt="8Leg モデル">
+
+ロボットを歩かせるサンプルプログラムを実行する場合は、３つ目のターミナルで以下のコマンド司令ノードを立ち上げます。
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces limb_cmd_8leg
+```
+Wave歩容を使って、ロボットが歩くと思います。
+
+<img src="Figs/8leg_walk.png" width="500" alt="8Leg walk">
+
 
 ### 6 Limb wheels robot
 
@@ -226,4 +240,9 @@ Basically, this program eliminate LH limb from 6Limb simulation. I am sorry that
 
 
 ## TODO
+- ガゼボのODOMで位置を取得しているが、二次元平面でしか出てこない。ｚ座標が取れない
+- ロボットのタッチセンサがうまくできていない　力を取得するなり考えないと行けない
+
+
+
 
