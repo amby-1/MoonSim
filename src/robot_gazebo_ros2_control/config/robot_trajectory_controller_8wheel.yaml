@@ -1,0 +1,272 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 1000  # Hz
+
+    joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - lr0_tc
+      - lr0_ct
+      - lr0_ft
+      - lr0_wh
+      - lr1_tc
+      - lr1_ct
+      - lr1_ft
+      - lr1_wh
+      - ll0_tc
+      - ll0_ct
+      - ll0_ft
+      - ll0_wh
+      - ll1_tc
+      - ll1_ct
+      - ll1_ft
+      - ll1_wh
+      - lr2_tc
+      - lr2_ct
+      - lr2_ft
+      - lr2_wh
+      - lr3_tc
+      - lr3_ct
+      - lr3_ft
+      - lr3_wh
+      - ll2_tc
+      - ll2_ct
+      - ll2_ft
+      - ll2_wh
+      - ll3_tc
+      - ll3_ct
+      - ll3_ft
+      - ll3_wh
+      - torso
+
+    gains:
+      lr0_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 0.0
+        ff_velocity_scale: 0.0
+      lr0_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr0_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr0_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0  
+      lr1_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr1_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr1_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr1_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr2_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 0.0
+        ff_velocity_scale: 0.0
+      lr2_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr2_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr2_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr3_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr3_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr3_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      lr3_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll0_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll0_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll0_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll0_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll1_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll1_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll1_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll1_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll2_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll2_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll2_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll2_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll3_tc:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll3_ct:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll3_ft:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      ll3_wh:
+        p: 50.0
+        d: 5.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+      torso:
+        p: 200.0
+        d: 10.0
+        i: 0.0
+        i_clamp: 1.0
+        ff_velocity_scale: 0.0
+
+    #gains:
+    #  lr0_tc: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  lr0_ct: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}      
+    #  lr0_ft: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  lr1_tc: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  lr1_ct: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}      
+    #  lr1_ft: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}      
+    #  ll0_tc: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0} 
+    #  ll0_ct: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  ll0_ft: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  ll1_tc: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  ll1_ct: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+    #  ll1_ft: {p: 50.,  d: 1., i: 0., i_clamp: 1., ff_velocity_scale: 0.0}
+      
+    command_interfaces:
+      - effort
+    state_interfaces:
+      - position
+      - velocity
+      
+    #state_publish_rate:  25.0            # Override default
+    #action_monitor_rate: 20.0
+    #allow_partial_joints_goal: true
+    allow_nonzero_velocity_at_trajectory_end: true
+

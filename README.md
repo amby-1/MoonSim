@@ -112,6 +112,44 @@ Wave歩容を使って、ロボットが歩くと思います。
 <img src="Figs/8leg_walk.png" width="500" alt="8Leg walk">
 
 
+### 8Wheels robot 
+３つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 launch robot_gazebo_ros2_control trajectory_controller_8wheel.launch.py
+```
+これで，Gazeboが立ち上がり，8 wheel ロボットが出てきます．
+更に、ステップ上の環境も出てくると思います。
+エラーが出なければ正常です．ワーニングは出ます．
+rvizも立ち上がるようにしてますが，設定はちゃんとしてないので，矢印だけ出てきます．
+
+２つ目のターミナルで，moonshot用のメッセージをガゼボ用メッセージに変換してくれるインターフェースノードを立ち上げます．
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces interface_8wheels_node
+```
+
+３つ目のターミナルで、サンプルのmoonshot用のコマンド司令ノードを立ち上げます。
+```bash
+cd MoonSim
+source install/setup.bash
+ros2 run ms_gazebo_interfaces limb_cmd_8wheels
+```
+
+This will make the robot moves with wheels. 
+When the robot detects stacking, the simulation ends. 
+
+
+<img src="Figs/8wheel.png" width="500" alt="8wheel walk">
+
+The node "limb_cmd_8wheels" corresponds to the code "limb_module_cmd_node_8wheels.cpp". 
+By editing this code, you can arrange the movement of the robot. 
+
+Somehow, the robot turns gradually even the rotating speeds of left and right wheels are the same. 
+I have not found any bugs related to the controller. I think this is a result of physical simulation. The ground reaction forces of the left and right side should be different. 
+
 ### 6 Limb wheels robot
 
 ３つターミナルを立ち上げてください．１つ目でgazeboをたちあげます
@@ -180,13 +218,21 @@ ros2 run ms_gazebo_interfaces limb_cmd_5wheels
 ### ノード接続図
 ノードの接続図を示します．
 
+
 <img src="Figs/node_connection.png" width="1000" alt="Nodes">
+
 
 このノード群は，大きくは A: Gazebo に関わる部分，B: joint_trajectory_controller に関わる部分，C: moonshot型に変更するインターフェース部分に大別されます．
 
 ### Gazebo関係
-Gazeboに関係する部分では，Gazebo内に作られた8脚ロボット（src/robot_gazebo_ros2_controlで定義）の物理シミュレーションを行い，ROS2との連携機能を提供します．内部はよくわかりませんが，`/parameter_events`というトピックを通してROS２に機能を提供しているようです．
+Gazeboに関係する部分では，Gazebo内に作られた8脚ロボット（src/robot_gazebo_ros2_control/urdf で定義）の物理シミュレーションを行い，ROS2との連携機能を提供します．内部はよくわかりませんが，`/parameter_events`というトピックを通してROS２に機能を提供しているようです．
 ロボットの定義はURDFで行っており，パラメタ等を変えたい場合は `src/robot_gazebo_ros2_control/urdf/robot_8leg.urdf`をいじる必要があります．これはxacroから作られておりxacroファイルをいじったほうが良いが，ここら辺の説明はTODO．
+
+The obstacles on the world is defined in `src/robot_gazebo_ros2_control/field/step.sdf`. 
+You can add or change the obstacles by editing this file. 
+
+Those robot and field are spawned by launch file. For each type of robot model, we need launch file such as `src/robot_gazebo_ros2_control/launch/robot_trajectory_controller_8leg.sdf`
+
 ロボットの座標系や物理パラメタは下記図を参考
 
 <img src="Figs/roboDefGazebo.png" width="600" alt="Nodes">
@@ -203,6 +249,9 @@ moonshot型のメッセージは，`src/ms_module_msgs`内に定義してあり�
 なお，このプログラムは制御周波数は 50Hz でデザインしています．
 
 <img src="Figs/roboDefMoon.png" width="1000" alt="Nodes">
+
+Efforts value (Torque Nm) of each joint is estimated from the PD gains and joind deviation. 
+Only for 8 Legged and wheeled robot model, this estimation is available. 
 
 ### 関節角を指令するサンプルノード
 `limb_module_cmd_node`(`src/ms_gazebo_interfaces/src/limb_module_cmd_node.cpp`)では，関節角を指令するサンプルノードとなっている．

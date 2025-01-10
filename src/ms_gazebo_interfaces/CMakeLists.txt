@@ -11,6 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(ms_module_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -29,6 +30,8 @@ add_executable(limb_cmd_5wheels src/limb_module_cmd_node_5wheels.cpp)
 add_executable(limb_cmd_test src/limb_module_cmd_node_1limb_for_test.cpp)
 add_executable(limb_cmd_6wheels_posver src/limb_module_cmd_node_6wheels_posver.cpp)
 add_executable(limb_cmd_8leg src/limb_module_cmd_node_8leg.cpp)
+add_executable(interface_8wheels_node src/interface_8wheels.cpp)
+add_executable(limb_cmd_8wheels src/limb_module_cmd_node_8wheels.cpp)
 
 # Link against dependencies
 ament_target_dependencies(limb_cmd_node rclcpp std_msgs ms_module_msgs)
@@ -37,20 +40,24 @@ ament_target_dependencies(limb_cmd_5wheels rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(interface_8leg_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 ament_target_dependencies(interface_6wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 ament_target_dependencies(interface_5wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
+ament_target_dependencies(interface_8wheels_node rclcpp std_msgs ms_module_msgs trajectory_msgs)
 ament_target_dependencies(limb_cmd_test rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(limb_cmd_6wheels_posver rclcpp std_msgs ms_module_msgs)
 ament_target_dependencies(limb_cmd_8leg rclcpp std_msgs ms_module_msgs)
+ament_target_dependencies(limb_cmd_8wheels rclcpp std_msgs ms_module_msgs nav_msgs)
 
 install(TARGETS
   limb_cmd_node
   interface_8leg_node
   interface_6wheels_node
   interface_5wheels_node
+  interface_8wheels_node
   limb_cmd_6wheels
   limb_cmd_5wheels
   limb_cmd_test
   limb_cmd_6wheels_posver
   limb_cmd_8leg
+  limb_cmd_8wheels
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

@@ -10,37 +10,36 @@
 #include "ms_module_msgs/msg/joint_cmd_list.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
-
 using namespace std::chrono_literals;
 #define PI 3.14159265358979323846
-#define CONTROL_freq 50 // Please specify the control frequency of the joint commands -->  1000/CONTROL_ms
 #define CONTROL_ms 20ms // THis specify the control frequency of gazebo. THe joint commmands are sent with this frequency  
+#define CONTROL_freq 50 // Please specify the control frequency of the joint commands -->  1000/CONTROL_ms
 
 #define P_gain 50 // gain of P gain 
 #define D_gain 5 // Gain of D gain 
+
 
 /* This example creates a subclass of Node and uses a fancy C++11 lambda
 * function to shorten the callback syntax, at the expense of making the
 * code somewhat more difficult to understand at first glance. */
 
-// 2024.09.25 Designed by Amby
-// THis program is to publish joint trajectory message to gazebo at 100Hz for 8 legged robot while receiving joint command from limb_module_cmd message type
-//  THis only check the frame_id of the joint_cmd_list message and update the position of the joint in the joint trajectory message
-//  Be notice that this program does not check the correctness of the joint_cmd_list message, only position control is implemented
-///
+// 2024.10.16 Designed by Amby
+// THis program is to publish joint trajectory message to gazebo at 100Hz for 6 wheel-legged robot while receiving joint command from limb_module_cmd message type
+//  THis only check the frame_id of the joint_cmd_list message and update the position of the joint in the joint trajectory message for TC CT FT joints 
+//  For wheels joints, the velocity is updated based on joint_cmd_list message
+//  Be notice that this program does not check the correctness of the joint_cmd_list message, Position control for TC-CT-FT joints and Velocity control for WH joint are implemented
 // 
-// 2024.11.02 Update interface 
-//
+
 // Memo 
 //  TODO :: Add joint state publisher to check the joint situations 
-//  TODO :: Calculate the efforts based on the PD gain and joint position error  
+//  TODO :: Calculate the efforts based on the PD gain and joint position error to sense the joint torque 
 //
 
-class ms_gz_interface_8leg : public rclcpp::Node
+class ms_gz_interface_8wheels : public rclcpp::Node
 {
 public:
-  ms_gz_interface_8leg()
-  : Node("ms_gz_interface_8leg"), count_(0), map_gzJoint_msJoint(), map_gzJoint_msJoint_direction(), map_msJoint_gzJoint(), map_gzJoint_ID() 
+  ms_gz_interface_8wheels()
+  : Node("ms_gz_interface_8wheels"), count_(0), map_gzJoint_msJoint(), map_gzJoint_msJoint_direction(), map_msJoint_gzJoint(), map_gzJoint_ID() 
   {
     // gazebo joint vs moon joint name mapping (Please edit depending on the definition)
     map_gzJoint_msJoint["lr0_tc"] = "limb_n_1_J_1";
@@ -49,6 +48,8 @@ public:
     map_gzJoint_msJoint_direction["lr0_ct"] = 1;
     map_gzJoint_msJoint["lr0_ft"] = "limb_n_1_J_3";
     map_gzJoint_msJoint_direction["lr0_ft"] = 1;
+    map_gzJoint_msJoint["lr0_wh"] = "limb_n_1_J_4";
+    map_gzJoint_msJoint_direction["lr0_wh"] = -1;
 
     map_gzJoint_msJoint["lr1_tc"] = "limb_n_2_J_1";
     map_gzJoint_msJoint_direction["lr1_tc"] = -1;
@@ -56,6 +57,8 @@ public:
     map_gzJoint_msJoint_direction["lr1_ct"] = 1;
     map_gzJoint_msJoint["lr1_ft"] = "limb_n_2_J_3";
     map_gzJoint_msJoint_direction["lr1_ft"] = 1;
+    map_gzJoint_msJoint["lr1_wh"] = "limb_n_2_J_4";
+    map_gzJoint_msJoint_direction["lr1_wh"] = -1;
     
     map_gzJoint_msJoint["lr2_tc"] = "limb_n_5_J_1";
     map_gzJoint_msJoint_direction["lr2_tc"] = -1;
@@ -63,13 +66,18 @@ public:
     map_gzJoint_msJoint_direction["lr2_ct"] = 1;
     map_gzJoint_msJoint["lr2_ft"] = "limb_n_5_J_3";
     map_gzJoint_msJoint_direction["lr2_ft"] = 1;
+    map_gzJoint_msJoint["lr2_wh"] = "limb_n_5_J_4";
+    map_gzJoint_msJoint_direction["lr2_wh"] = -1;
     
+
     map_gzJoint_msJoint["lr3_tc"] = "limb_n_6_J_1";
     map_gzJoint_msJoint_direction["lr3_tc"] = -1;
     map_gzJoint_msJoint["lr3_ct"] = "limb_n_6_J_2";
     map_gzJoint_msJoint_direction["lr3_ct"] = 1;
     map_gzJoint_msJoint["lr3_ft"] = "limb_n_6_J_3";
     map_gzJoint_msJoint_direction["lr3_ft"] = 1;
+    map_gzJoint_msJoint["lr3_wh"] = "limb_n_6_J_4";
+    map_gzJoint_msJoint_direction["lr3_wh"] = -1;
 
     map_gzJoint_msJoint["ll0_tc"] = "limb_n_3_J_1";
     map_gzJoint_msJoint_direction["ll0_tc"] = 1;
@@ -77,13 +85,17 @@ public:
     map_gzJoint_msJoint_direction["ll0_ct"] = -1;
     map_gzJoint_msJoint["ll0_ft"] = "limb_n_3_J_3";
     map_gzJoint_msJoint_direction["ll0_ft"] = -1;
-    
+    map_gzJoint_msJoint["ll0_wh"] = "limb_n_3_J_4";
+    map_gzJoint_msJoint_direction["ll0_wh"] = 1;
+
     map_gzJoint_msJoint["ll1_tc"] = "limb_n_4_J_1";
     map_gzJoint_msJoint_direction["ll1_tc"] = 1;
     map_gzJoint_msJoint["ll1_ct"] = "limb_n_4_J_2";
     map_gzJoint_msJoint_direction["ll1_ct"] = -1;
     map_gzJoint_msJoint["ll1_ft"] = "limb_n_4_J_3";
     map_gzJoint_msJoint_direction["ll1_ft"] = -1;
+    map_gzJoint_msJoint["ll1_wh"] = "limb_n_4_J_4";
+    map_gzJoint_msJoint_direction["ll1_wh"] = 1;
     
     map_gzJoint_msJoint["ll2_tc"] = "limb_n_7_J_1";
     map_gzJoint_msJoint_direction["ll2_tc"] = 1;
@@ -91,6 +103,8 @@ public:
     map_gzJoint_msJoint_direction["ll2_ct"] = -1;
     map_gzJoint_msJoint["ll2_ft"] = "limb_n_7_J_3";
     map_gzJoint_msJoint_direction["ll2_ft"] = -1;
+    map_gzJoint_msJoint["ll2_wh"] = "limb_n_7_J_4";
+    map_gzJoint_msJoint_direction["ll2_wh"] = 1;
     
     map_gzJoint_msJoint["ll3_tc"] = "limb_n_8_J_1";
     map_gzJoint_msJoint_direction["ll3_tc"] = 1;
@@ -98,7 +112,13 @@ public:
     map_gzJoint_msJoint_direction["ll3_ct"] = -1;
     map_gzJoint_msJoint["ll3_ft"] = "limb_n_8_J_3"; 
     map_gzJoint_msJoint_direction["ll3_ft"] = -1;
-    
+    map_gzJoint_msJoint["ll3_wh"] = "limb_n_8_J_4";
+    map_gzJoint_msJoint_direction["ll3_wh"] = 1;
+  
+
+    for (int i = 0; i < 8; i++){
+      joints_WH_positions[i] = 0.0;
+    }
 
     // gazebo joint name vs Joint IDs -- No need to edit this part
     for(auto itr = map_gzJoint_msJoint.begin(); itr != map_gzJoint_msJoint.end(); ++itr) {
@@ -129,10 +149,22 @@ public:
     map_gzJoint_ID["ll3_ct"] = 23;
     map_gzJoint_ID["ll3_ft"] = 24;
 
+    map_gzJoint_ID["lr0_wh"] = 25;
+    map_gzJoint_ID["lr1_wh"] = 26;
+    map_gzJoint_ID["lr2_wh"] = 27;
+    map_gzJoint_ID["lr3_wh"] = 28;
+    map_gzJoint_ID["ll0_wh"] = 29;
+    map_gzJoint_ID["ll1_wh"] = 30;
+    map_gzJoint_ID["ll2_wh"] = 31;
+    map_gzJoint_ID["ll3_wh"] = 32;
+
+
     // position command message to joint trajectory message
-    jPoints.positions.resize(25);
-    for (int i = 0; i < 25; i++) {
+    jPoints.positions.resize(33);
+    jPoints.velocities.resize(33);
+    for (int i = 0; i < 33; i++) {
         jPoints.positions.at(i) = 0.0;
+        jPoints.velocities.at(i) = 0.0;
     }
     
     // define publisher joint trajectroy message
@@ -149,32 +181,32 @@ public:
     
     subscription_1 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_1/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_2 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_2/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_3 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_3/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_4 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_4/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_5 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_5/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_6 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_6/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_7 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_7/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
     subscription_8 = this->create_subscription<ms_module_msgs::msg::JointCmdList>(
             "/limb_n_8/joint/in/joint_cmd_list", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback, this, std::placeholders::_1));
 
     subscription_joint_state = this->create_subscription<sensor_msgs::msg::JointState>(
             "/joint_states", 10,
-            std::bind(&ms_gz_interface_8leg::topic_callback_joint_state, this, std::placeholders::_1));
+            std::bind(&ms_gz_interface_8wheels::topic_callback_joint_state, this, std::placeholders::_1));
 
     auto timer_callback =
       [this]() -> void {
@@ -207,7 +239,16 @@ public:
         message.joint_names.push_back("ll3_tc");
         message.joint_names.push_back("ll3_ct");
         message.joint_names.push_back("ll3_ft");
-        
+
+        message.joint_names.push_back("lr0_wh");
+        message.joint_names.push_back("lr1_wh");
+        message.joint_names.push_back("lr2_wh");
+        message.joint_names.push_back("lr3_wh");
+        message.joint_names.push_back("ll0_wh");
+        message.joint_names.push_back("ll1_wh");
+        message.joint_names.push_back("ll2_wh");
+        message.joint_names.push_back("ll3_wh");
+            
         count_++;
 
         /*
@@ -231,7 +272,7 @@ public:
         point.positions.at(4) = angle2;
         point.positions.at(5) = angle2;
         // LR2
-        point.positions.at(6) = 0.;//angle;
+        point.positions.at(6) = 0.;//angle;f
         point.positions.at(7) = angle3;
         point.positions.at(8) = angle3;
         // LR3 
@@ -272,7 +313,7 @@ public:
         for (int i=0; i<8; i++){
             auto message = sensor_msgs::msg::JointState();
             message.header.stamp = this->now();
-            for (int j=0; j<3; j++){
+            for (int j=0; j<4; j++){
               auto name = "limb_n_" + std::to_string(i+1) + "_J_" + std::to_string(j+1);// limb_n_2_J_4 
               // Joint 1 TC
               message.name.push_back(name);
@@ -286,7 +327,6 @@ public:
 
     timer_ = this->create_wall_timer(CONTROL_ms, timer_callback);
     timer2_ = this->create_wall_timer(20ms, timer_callback_joint_state);
-
     RCLCPP_INFO(this->get_logger(), "Interface node to bridge GZ and Moon. CMD is sent to GZ every %d ms ", CONTROL_ms);
     RCLCPP_INFO(this->get_logger(), "This interface only provides bridge between joint_angle_commands. Sensing information has not YET been bridged <TODO>");
   }
@@ -301,19 +341,31 @@ private:
             auto joint_name = joint_cmd.header.frame_id;
             auto it = map_msJoint_gzJoint.find(joint_name);
             if (it == map_msJoint_gzJoint.end()) {
-                if(joint_name != "torso"){
-                  RCLCPP_WARN(this->get_logger(), "WARNING :: MS Joint name not found in the map::  %s", joint_name.c_str());
-                }
+                RCLCPP_WARN(this->get_logger(), "WARNING :: MS Joint name not found in the map::  %s", joint_name.c_str());
                 continue;
             }
             auto joint_name_gz = map_msJoint_gzJoint[joint_name];
             auto joint_id = map_gzJoint_ID[joint_name_gz];
-            auto joint_position = joint_cmd.position * PI / 180.;
+            double joint_position = 0.0;
+            if (joint_name_gz.find("wh") != std::string::npos) {
+                if( joint_cmd.control_type == 1){
+                  // velocity control
+                  joints_WH_positions[joint_id - 24] += joint_cmd.velocity * PI / 180. * 1./CONTROL_freq;
+                  joint_position = joints_WH_positions[joint_id - 24];
+                  jPoints.velocities.at(joint_id) = joint_cmd.velocity * PI / 180.;
+                }else{
+                  // position control
+                  joint_position = joint_cmd.position * PI / 180.;
+                  joints_WH_positions[joint_id - 24] = joint_position;
+                }
+            }else{
+                joint_position = joint_cmd.position * PI / 180.;
+            }
             jPoints.positions.at(joint_id) = joint_position * map_gzJoint_msJoint_direction[joint_name_gz];
         }
     }
-
-     // joint state callback
+   
+  // joint state callback
   void topic_callback_joint_state(const sensor_msgs::msg::JointState::SharedPtr msg)
     {
         // Extract the data from the message and put it into a position commands
@@ -324,21 +376,22 @@ private:
               if(joint_name != "torso"){
                 RCLCPP_WARN(this->get_logger(), "WARNING :: GZ Joint name not found in the map::  %s", joint_name.c_str());
               }
-              continue;
+                continue;
             }
             //auto joint_name_ms = map_gzJoint_msJoint[joint_name];
             auto joint_id = map_gzJoint_ID[joint_name];
             sns_positions.at(joint_id) = msg->position[i] * 180./PI * map_gzJoint_msJoint_direction[joint_name];
             sns_velocities.at(joint_id) = msg->velocity[i] * 180./PI * map_gzJoint_msJoint_direction[joint_name];
             double cmd_position = jPoints.positions.at(joint_id);
-            double estimated_torque = P_gain * (cmd_position-msg->position[i]) - D_gain*msg->velocity[i];
-            sns_efforts.at(joint_id) = estimated_torque * map_gzJoint_msJoint_direction[joint_name];
+            double estimated_torque = P_gain * (cmd_position - msg->position[i]) - D_gain*msg->velocity[i];
+            sns_efforts.at(joint_id) = estimated_torque * map_gzJoint_msJoint_direction[joint_name];           
+            //sns_efforts.at(joint_id) = msg->effort[i] * map_gzJoint_msJoint_direction[joint_name];
         }
     }
 
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::TimerBase::SharedPtr timer2_;
-
+  
   rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr publisher_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr subscription_joint_state;
 
@@ -353,22 +406,25 @@ private:
   rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_7;
   rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_8;
   
-//  rclcpp::Subscription<ms_module_msgs::msg::JointCmdList>::SharedPtr subscription_;
+  
   int count_;
   std::unordered_map<std::string, std::string> map_gzJoint_msJoint;
   std::unordered_map<std::string, int> map_gzJoint_msJoint_direction; // If gzJoit's direction is equal to that of msJoint, set 1. otherwise, set  -1     
   std::unordered_map<std::string, std::string> map_msJoint_gzJoint;
   std::map<std::string, int> map_gzJoint_ID;
-  trajectory_msgs::msg::JointTrajectoryPoint jPoints;    
-  std::array<double, 25> sns_positions;
-  std::array<double, 25> sns_velocities;
-  std::array<double, 25> sns_efforts;
+  trajectory_msgs::msg::JointTrajectoryPoint jPoints;
+  std::array<double, 33> sns_positions;
+  std::array<double, 33> sns_velocities;
+  std::array<double, 33> sns_efforts;
+
+  double joints_WH_positions[8];
+
 };
 
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<ms_gz_interface_8leg>());
+  rclcpp::spin(std::make_shared<ms_gz_interface_8wheels>());
   rclcpp::shutdown();
   return 0;
 }
